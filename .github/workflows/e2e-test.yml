@@ -32,10 +32,22 @@ jobs:
 
       - name: Install dependencies
         run: |
-          wget http://kr.archive.ubuntu.com/ubuntu/pool/universe/g/gconf/gconf2-common_3.2.6-6ubuntu1_all.deb
-          wget http://kr.archive.ubuntu.com/ubuntu/pool/universe/g/gconf/libgconf-2-4_3.2.6-6ubuntu1_amd64.deb
+          sudo apt-get update    
+          sudo apt-get install -y wget    
+          
+          # Download required .deb packages from Ubuntu 22.04 (Jammy)    
+          wget http://archive.ubuntu.com/ubuntu/pool/universe/g/gconf/libgconf-2-4_3.2.6-6ubuntu1_amd64.deb
+          wget http://archive.ubuntu.com/ubuntu/pool/universe/g/gconf/gconf2-common_3.2.6-6ubuntu1_all.deb
+          wget http://archive.ubuntu.com/ubuntu/pool/main/d/dbus-glib/libdbus-glib-1-2_0.110-6_amd64.deb
+          
+          # Install dependencies first
           sudo dpkg -i gconf2-common_3.2.6-6ubuntu1_all.deb
+          sudo dpkg -i libdbus-glib-1-2_0.110-6_amd64.deb
           sudo dpkg -i libgconf-2-4_3.2.6-6ubuntu1_amd64.deb
+          
+          # Fix any broken dependencies
+          sudo apt-get install -f -y
+          
           npm ci
           npm run cy:verify
 
